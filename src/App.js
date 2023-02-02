@@ -11,6 +11,8 @@ import SanPham from "./views/sanpham";
 import FormSanPham from "./views/sanpham/FormSanPham";
 import HangDienThoai from "./views/hangdienthoai";
 import ChiNhanh from "./views/chinhanh";
+import NhaCungCap from "./views/nhacungcap";
+import KhachHang from "./views/khachhang";
 function App() {
   const [theme, colorMode] = useMode();
   //console.log(useSelector((state) => state.token));
@@ -31,6 +33,8 @@ function App() {
               <Route path="/sanpham/them" element={isAuth ? <FormSanPham /> : <Navigate to="/login" />} />
               <Route path="/hangdt" element={isAuth ? <HangDienThoai /> : <Navigate to="/login" />} />
               <Route path="/chinhanh" element={isAuth ? <ChiNhanh /> : <Navigate to="/login" />} />
+              <Route path="/nhacungcap" element={isAuth ? <NhaCungCap /> : <Navigate to="/login" />} />
+              <Route path="/khachhang" element={isAuth ? <KhachHang /> : <Navigate to="/login" />} />
             </Routes>
           </main>
         </div>

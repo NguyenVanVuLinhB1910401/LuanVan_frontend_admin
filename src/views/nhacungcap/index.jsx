@@ -6,22 +6,24 @@ import FormDialog from './FormDialog';
 import { useState, useEffect } from 'react';
 import axios from "axios";
 import { useSelector } from 'react-redux';
-const ChiNhanh = () => {
+const NhaCungCap = () => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
     const token = useSelector((state) => state.token);
     const columns = [
         { field: '_id', headerName: 'ID', flex: 2 },
-        { field: 'tenChiNhanh', headerName: 'Tên chi nhánh', flex: 2 },
-        { field: 'diaChiChiNhanh', headerName: "Địa chỉ chi nhánh", flex: 3},
+        { field: 'tenNCC', headerName: 'Tên nhà cung cấp', flex: 1 },
+        { field: 'sdtNCC', headerName: "Số điện thoại", flex: 1},
+        { field: 'emailNCC', headerName: "Email", flex: 1},
+        { field: 'diaChiNCC', headerName: "Địa chỉ nhà cung cấp", flex: 2},
         {
           field: 'action',
           headerName: 'Hành động',
-          flex: 2,
+          flex: 1,
           
           renderCell: (cellValues) => (
             <Box display="flex" gap={2}>
-              <Button
+              {/* <Button
                 sx={{
                   backgroundColor: colors.greenAccent[600],
                   '&:hover': {
@@ -30,7 +32,7 @@ const ChiNhanh = () => {
                 }}
               >
                 Cập nhật
-              </Button>
+              </Button> */}
               <Button
               sx={{
                 backgroundColor: colors.redAccent[600],
@@ -38,7 +40,7 @@ const ChiNhanh = () => {
                   backgroundColor: colors.redAccent[500],
                 },
               }}
-              onClick={() => handleDeleteChiNhanh(cellValues.row._id)}
+              onClick={() => handleDeleteNhaCungCap(cellValues.row._id)}
               >Xóa</Button>
             </Box>
           ),
@@ -46,8 +48,8 @@ const ChiNhanh = () => {
       ];
       const [data, setData] = useState([]);
       //API GET DATA BACKEND
-  const getAllChiNhanh = () => {
-    axios.get("http://localhost:3000/api/chinhanhs", {
+  const getAllNhaCungCap = () => {
+    axios.get("http://localhost:3000/api/nhacungcaps", {
       headers: {
         Authorization: `Bearer ${token}`
       }
@@ -61,14 +63,14 @@ const ChiNhanh = () => {
         }
     }).catch((err) => console.log(err))
   };
-  const handleDeleteChiNhanh = async (id) => {
-        axios.delete("http://localhost:3000/api/chinhanhs/"+id,  {
+  const handleDeleteNhaCungCap = async (id) => {
+        axios.delete("http://localhost:3000/api/nhacungcaps/"+id,  {
           headers: {
             Authorization: `Bearer ${token}`
           }
         }).then((res) => {
             if(res.status === 200){
-                alert("Xóa chi nhánh thành công");
+                alert("Xóa nhà cung cấp thành công");
                 setData(data.filter((dt) => dt._id !== id))
                 
             }
@@ -76,14 +78,14 @@ const ChiNhanh = () => {
   };
 
   useEffect(() => {
-    getAllChiNhanh();
+    getAllNhaCungCap();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
     return (
         <Box m="15px">
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <Box>
           <Typography variant="h2" color={colors.grey[100]} fontWeight="bold">
-            DANH SÁCH CHI NHÁNH
+            DANH SÁCH NHÀ CUNG CẤP
           </Typography>
         </Box>
         <Box>
@@ -136,4 +138,4 @@ const ChiNhanh = () => {
     );
 };
 
-export default ChiNhanh;
+export default NhaCungCap;

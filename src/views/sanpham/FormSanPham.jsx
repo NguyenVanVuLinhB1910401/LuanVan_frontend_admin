@@ -41,6 +41,8 @@ let initialValuesSanPham = {
   giaBan: '',
   idKhuyenMai: '',
   dsAnh: [],
+  spMoi: 1,
+  spNoiBat: 1,
   trangThai: 1,
 };
 
@@ -98,6 +100,7 @@ const FormSanPham = () => {
         });
     } else {
       formData.append('anhDaiDien', values.picture.name);
+      //console.log(values);
       //Post data them san pham
       axios
         .post(`http://localhost:3000/api/sanphams`, formData, {
@@ -172,11 +175,13 @@ const FormSanPham = () => {
         giaBan: '',
         idKhuyenMai: '',
         dsAnh: [],
+        spMoi: response.data.result.spMoi,
+        spNoiBat: response.data.result.spNoiBat,
         trangThai: response.data.result.trangThai,
       };
       if (response.data.result.giaBan)
         data.giaBan = response.data.result.giaBan;
-        setOldGiaBan(response.data.result.giaBan);
+      setOldGiaBan(response.data.result.giaBan);
       if (response.data.result.anhDaiDien) {
         setOldAnhDaiDien(response.data.result.anhDaiDien);
       }
@@ -218,9 +223,9 @@ const FormSanPham = () => {
               <Box
                 display="grid"
                 gap="15px"
-                gridTemplateColumns="repeat(3, minmax(0, 1fr))"
+                gridTemplateColumns="repeat(4, minmax(0, 1fr))"
                 sx={{
-                  '& > div': 'span 3',
+                  '& > div': 'span 4',
                 }}
               >
                 <>
@@ -305,6 +310,7 @@ const FormSanPham = () => {
                     border={`1px solid ${colors.blueAccent[500]}`}
                     borderRadius="5px"
                     p="0.1rem"
+                    height="52px"
                   >
                     <Dropzone
                       acceptedFiles=".jpg,.jpeg,.png"
@@ -317,7 +323,7 @@ const FormSanPham = () => {
                         <Box
                           {...getRootProps()}
                           border={`2px dashed ${colors.blueAccent[700]}`}
-                          sx={{ '&:hover': { cursor: 'pointer' } }}
+                          sx={{ '&:hover': { cursor: 'pointer' }, height: "100%" }}
                         >
                           <input {...getInputProps()} />
                           {!values.picture ? (
@@ -337,28 +343,31 @@ const FormSanPham = () => {
                       )}
                     </Dropzone>
                   </Box>
-                  <TextField
-                    label="Màn hình"
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    value={values.manHinh}
-                    name="manHinh"
-                    error={Boolean(touched.manHinh) && Boolean(errors.manHinh)}
-                    helperText={touched.manHinh && errors.manHinh}
-                    sx={{ gridColumn: 'span 1' }}
-                  />
-                  <TextField
-                    label="Hệ điều hành"
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    value={values.heDieuHanh}
-                    name="heDieuHanh"
-                    error={
-                      Boolean(touched.heDieuHanh) && Boolean(errors.heDieuHanh)
-                    }
-                    helperText={touched.heDieuHanh && errors.heDieuHanh}
-                    sx={{ gridColumn: 'span 1' }}
-                  />
+                    <TextField
+                      label="Màn hình"
+                      onBlur={handleBlur}
+                      onChange={handleChange}
+                      value={values.manHinh}
+                      name="manHinh"
+                      error={
+                        Boolean(touched.manHinh) && Boolean(errors.manHinh)
+                      }
+                      helperText={touched.manHinh && errors.manHinh}
+                      sx={{ gridColumn: 'span 1' }}
+                    />
+                    <TextField
+                      label="Hệ điều hành"
+                      onBlur={handleBlur}
+                      onChange={handleChange}
+                      value={values.heDieuHanh}
+                      name="heDieuHanh"
+                      error={
+                        Boolean(touched.heDieuHanh) &&
+                        Boolean(errors.heDieuHanh)
+                      }
+                      helperText={touched.heDieuHanh && errors.heDieuHanh}
+                      sx={{ gridColumn: 'span 1' }}
+                    />
                   <TextField
                     label="Camera trước"
                     onBlur={handleBlur}
@@ -472,7 +481,7 @@ const FormSanPham = () => {
                     name="moTa"
                     error={Boolean(touched.moTa) && Boolean(errors.moTa)}
                     helperText={touched.moTa && errors.moTa}
-                    sx={{ gridColumn: 'span 3' }}
+                    sx={{ gridColumn: 'span 4' }}
                   />
                   <FormControl
                     sx={{ display: 'flex', justifyContent: 'space-between' }}
@@ -502,6 +511,67 @@ const FormSanPham = () => {
                     </Box>
                   </FormControl>
 
+                  <FormControl
+                    sx={{ display: 'flex', justifyContent: 'space-between' }}
+                  >
+                    <Box display="flex" gap={3} alignItems="center">
+                      <FormLabel>Sản phẩm mới:</FormLabel>
+                      <Field
+                        as={RadioGroup}
+                        onBlur={handleBlur}
+                        onChange={handleChange}
+                        value={values.spMoi}
+                        name="spMoi"
+                      >
+                        <Box display="flex">
+                          <FormControlLabel
+                            value={1}
+                            control={<Radio />}
+                            label="Yes"
+
+                          />
+                          <FormControlLabel
+                            value={0}
+                            control={<Radio />}
+                            label="No"
+                          />
+                        </Box>
+                      </Field>
+                    </Box>
+                  </FormControl>
+
+                  <FormControl
+                    sx={{ display: 'flex', justifyContent: 'space-between' }}
+                  >
+                    <Box display="flex" gap={3} alignItems="center">
+                      <FormLabel>Sản phẩm nổi bật:</FormLabel>
+                      <Field
+                        as={RadioGroup}
+                        onBlur={handleBlur}
+                        onChange={handleChange}
+                        value={values.spNoiBat}
+                        name="spNoiBat"
+                      >
+                        <Box display="flex">
+                          <FormControlLabel
+                            value={1}
+                            control={<Radio />}
+                            label="Yes"
+
+                          />
+                          <FormControlLabel
+                            value={0}
+                            control={<Radio />}
+                            label="No"
+                          />
+                        </Box>
+                      </Field>
+                    </Box>
+                  </FormControl>
+
+
+                  
+
                   <Box sx={{ gridColumn: 'span 3', margin: '10px auto' }}>
                     <Button
                       type="submit"
@@ -511,7 +581,7 @@ const FormSanPham = () => {
                         ':hover': { background: colors.greenAccent[400] },
                       }}
                     >
-                      {idSP ? "Cập nhật" : "Thêm"}
+                      {idSP ? 'Cập nhật' : 'Thêm'}
                     </Button>
                   </Box>
                 </>

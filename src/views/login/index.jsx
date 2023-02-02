@@ -95,6 +95,7 @@ const Login = () => {
 
                 <TextField
                   label="Mật khẩu"
+                  type="password"
                   onBlur={handleBlur}
                   onChange={handleChange}
                   value={values.matKhau}

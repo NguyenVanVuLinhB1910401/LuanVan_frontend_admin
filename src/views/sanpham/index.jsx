@@ -20,7 +20,7 @@ const SanPham = () => {
     navigate('/sanpham/them');
   };
   const columns = [
-    { field: 'tenSanPham', headerName: 'Tên sản phẩm', flex: 1 },
+    { field: 'tenSanPham', headerName: 'Tên sản phẩm', flex: 2, valueGetter: (params) => params.row.tenSanPham + " " + params.row.dungLuong +"GB" },
     { field: 'loaiSanPham', headerName: 'Loại sản phẩm', flex: 1, valueGetter: (params) => params.row?.idLoaiSP[0]?.tenLoaiSP },
     { field: 'hangDienThoai', headerName: 'Hãng điện thoại', flex: 1, valueGetter: (params) => params.row?.idHangDT[0]?.tenHang  },
     { field: 'giaBan', headerName: 'Giá bán', flex: 1, valueGetter: (params) => {

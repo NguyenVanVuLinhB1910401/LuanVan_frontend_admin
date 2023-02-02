@@ -43,7 +43,6 @@ root.render(
         <App />
       </PersistGate>
     </Provider>
-      
     </BrowserRouter>
   </React.StrictMode> 
 );
