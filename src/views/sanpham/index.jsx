@@ -25,8 +25,8 @@ const SanPham = () => {
     { field: 'hangDienThoai', headerName: 'Hãng điện thoại', flex: 1, valueGetter: (params) => params.row?.idHangDT[0]?.tenHang  },
     { field: 'giaBan', headerName: 'Giá bán', flex: 1, valueGetter: (params) => {
       let giaBan = null;
-      if(params.row.idGiaBan.giaBan){
-        giaBan = parseInt(params.row?.idGiaBan?.giaBan).toLocaleString('it-IT', {style : 'currency', currency : 'VND'});
+      if(params.row.giaBan){
+        giaBan = parseInt(params.row.giaBan).toLocaleString('it-IT', {style : 'currency', currency : 'VND'});
       }
       return giaBan ?? "Chưa nhập giá";
     }},

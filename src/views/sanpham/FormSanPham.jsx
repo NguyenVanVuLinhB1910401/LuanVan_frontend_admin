@@ -11,7 +11,7 @@ import {
   FormControlLabel,
   Radio,
 } from '@mui/material';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, useNavigate } from 'react-router-dom';
 import { Field, Formik } from 'formik';
 import * as yup from 'yup';
 import { useTheme } from '@mui/material';
@@ -39,6 +39,7 @@ let initialValuesSanPham = {
   idLoaiSP: '',
   idHangDT: '',
   giaBan: '',
+  giaGoc: '',
   idKhuyenMai: '',
   dsAnh: [],
   spMoi: 1,
@@ -62,6 +63,7 @@ const sanPhamSchema = yup.object().shape({
   idHangDT: yup.string().required('Không được để trống'),
 });
 const FormSanPham = () => {
+  const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const idSP = searchParams.get('idSP');
   const theme = useTheme();
@@ -72,7 +74,6 @@ const FormSanPham = () => {
   const [loaiSanPham, setLoaiSanPham] = useState([]);
   const [hangDienThoai, setHangDienThoai] = useState([]);
   const [oldAnhDaiDien, setOldAnhDaiDien] = useState('undefined');
-  const [oldGiaBan, setOldGiaBan] = useState('');
   const handleFormSubmit = (values, onSubmitProps) => {
     const formData = new FormData();
     for (let value in values) {
@@ -81,7 +82,6 @@ const FormSanPham = () => {
     if (idSP) {
       formData.append('oldAnhDaiDien', oldAnhDaiDien);
       formData.append('newAnhDaiDien', values.picture.name);
-      formData.append('oldGiaBan', oldGiaBan);
       //Post data update san pham
       axios
         .put(`http://localhost:3000/api/sanphams/${idSP}`, formData, {
@@ -91,8 +91,9 @@ const FormSanPham = () => {
         })
         .then((response) => {
           if (response.status === 200) {
-            console.log(response.data.result);
+            //console.log(response.data.result);
             alert('Cập nhật sản phẩm thành công.');
+            navigate("/sanpham");
           }
         })
         .catch((err) => {
@@ -110,8 +111,9 @@ const FormSanPham = () => {
         })
         .then((response) => {
           if (response.status === 201) {
-            console.log(response.data.result);
+            //console.log(response.data.result);
             alert('Thêm sản phẩm thành công.');
+            navigate("/sanpham");
           }
         })
         .catch((err) => {
@@ -172,16 +174,14 @@ const FormSanPham = () => {
         picture: '',
         idLoaiSP: response.data.result.idLoaiSP,
         idHangDT: response.data.result.idHangDT,
-        giaBan: '',
+        giaBan: response.data.result.giaBan ?? '',
+        giaGoc: response.data.result.giaGoc ?? '',
         idKhuyenMai: '',
         dsAnh: [],
         spMoi: response.data.result.spMoi,
         spNoiBat: response.data.result.spNoiBat,
         trangThai: response.data.result.trangThai,
       };
-      if (response.data.result.giaBan)
-        data.giaBan = response.data.result.giaBan;
-      setOldGiaBan(response.data.result.giaBan);
       if (response.data.result.anhDaiDien) {
         setOldAnhDaiDien(response.data.result.anhDaiDien);
       }
@@ -462,6 +462,18 @@ const FormSanPham = () => {
                   />
                   <TextField
                     type="number"
+                    label="Giá gốc"
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    value={values.giaGoc}
+                    name="giaGoc"
+                    error={Boolean(touched.giaGoc) && Boolean(errors.giaGoc)}
+                    helperText={touched.giaGoc && errors.giaGoc}
+                    sx={{ gridColumn: 'span 1' }}
+                  />
+
+                  <TextField
+                    type="number"
                     label="Giá bán"
                     onBlur={handleBlur}
                     onChange={handleChange}
@@ -471,18 +483,7 @@ const FormSanPham = () => {
                     helperText={touched.giaBan && errors.giaBan}
                     sx={{ gridColumn: 'span 1' }}
                   />
-                  <TextField
-                    label="Thông tin sản phẩm"
-                    multiline
-                    rows="4"
-                    onBlur={handleBlur}
-                    onChange={handleChange}
-                    value={values.moTa}
-                    name="moTa"
-                    error={Boolean(touched.moTa) && Boolean(errors.moTa)}
-                    helperText={touched.moTa && errors.moTa}
-                    sx={{ gridColumn: 'span 4' }}
-                  />
+                  
                   <FormControl
                     sx={{ display: 'flex', justifyContent: 'space-between' }}
                   >
@@ -569,16 +570,27 @@ const FormSanPham = () => {
                     </Box>
                   </FormControl>
 
+                  <TextField
+                    label="Thông tin sản phẩm"
+                    multiline
+                    rows="4"
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    value={values.moTa}
+                    name="moTa"
+                    error={Boolean(touched.moTa) && Boolean(errors.moTa)}
+                    helperText={touched.moTa && errors.moTa}
+                    sx={{ gridColumn: 'span 4' }}
+                  />
 
-                  
-
-                  <Box sx={{ gridColumn: 'span 3', margin: '10px auto' }}>
+                  <Box sx={{ gridColumn: 'span 4', margin: '10px auto' }}>
                     <Button
                       type="submit"
                       sx={{
+                        width: "200px",
                         padding: '20px 30px',
                         background: colors.greenAccent[600],
-                        ':hover': { background: colors.greenAccent[400] },
+                        ':hover': { background: colors.greenAccent[400], color: 'black' },
                       }}
                     >
                       {idSP ? 'Cập nhật' : 'Thêm'}
