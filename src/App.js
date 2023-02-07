@@ -13,6 +13,10 @@ import HangDienThoai from "./views/hangdienthoai";
 import ChiNhanh from "./views/chinhanh";
 import NhaCungCap from "./views/nhacungcap";
 import KhachHang from "./views/khachhang";
+import KhoHang from "./views/khohang";
+import PhieuNhap from "./views/nhapkho/index";
+import NhapKho from "./views/nhapkho/nhapkho";
+import DSSPDaNhap from "./views/nhapkho/danhsachsanphamdanhap";
 function App() {
   const [theme, colorMode] = useMode();
   //console.log(useSelector((state) => state.token));
@@ -35,6 +39,10 @@ function App() {
               <Route path="/chinhanh" element={isAuth ? <ChiNhanh /> : <Navigate to="/login" />} />
               <Route path="/nhacungcap" element={isAuth ? <NhaCungCap /> : <Navigate to="/login" />} />
               <Route path="/khachhang" element={isAuth ? <KhachHang /> : <Navigate to="/login" />} />
+              <Route path="/khohang" element={isAuth ? <KhoHang /> : <Navigate to="/login" />} />
+              <Route path="/phieunhap" element={isAuth ? <PhieuNhap /> : <Navigate to="/login" />} />
+              <Route path="/phieunhap/nhapkho" element={isAuth ? <NhapKho /> : <Navigate to="/login" />} />
+              <Route path="/phieunhap/dsspdanhap" element={isAuth ? <DSSPDaNhap /> : <Navigate to="/login" />} />
             </Routes>
           </main>
         </div>
