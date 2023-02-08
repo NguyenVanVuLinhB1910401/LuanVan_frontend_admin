@@ -64,7 +64,8 @@ const Item = ({ title, to, icon, selected, setSelected }) => {
           "& .pro-menu-item.active": {
             color: "#ff6600 !important",
           },
-          
+          height: "100%",
+          overflowY: "auto"
         }}
       >
         <ProSidebar collapsed={isCollapsed}>
@@ -94,7 +95,7 @@ const Item = ({ title, to, icon, selected, setSelected }) => {
               )}
             </MenuItem>
   
-            {!isCollapsed && (
+            {/* {!isCollapsed && (
               <Box mb="25px">
                 <Box display="flex" justifyContent="center" alignItems="center">
                   <img
@@ -116,7 +117,7 @@ const Item = ({ title, to, icon, selected, setSelected }) => {
                   </Typography>
                 </Box>
               </Box>
-            )}
+            )} */}
   
             <Box paddingLeft={isCollapsed ? undefined : "10%"}>
               <Item
@@ -183,6 +184,13 @@ const Item = ({ title, to, icon, selected, setSelected }) => {
               <Item
                 title="Quản lý nhập kho"
                 to="/phieunhap"
+                icon={<BarChartOutlinedIcon />}
+                selected={selected}
+                setSelected={setSelected}
+              />
+              <Item
+                title="Quản lý xuất kho"
+                to="/phieuxuat"
                 icon={<BarChartOutlinedIcon />}
                 selected={selected}
                 setSelected={setSelected}
