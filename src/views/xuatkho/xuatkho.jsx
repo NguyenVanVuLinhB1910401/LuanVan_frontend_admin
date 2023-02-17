@@ -133,8 +133,12 @@ const XuatKho = () => {
       })
       .then((response) => {
         if (response.status === 201) {
-          console.log(response.data);
+          //console.log(response.data);
           alert("Xuất kho thành công");
+          navigate("/xuatkho");
+        }
+        if (response.status === 200) {
+          alert(response.data.message);
         }
       })
       .catch((err) => console.log(err));

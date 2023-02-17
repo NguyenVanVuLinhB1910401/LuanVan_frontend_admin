@@ -119,7 +119,7 @@ const Item = ({ title, to, icon, selected, setSelected }) => {
               </Box>
             )} */}
   
-            <Box paddingLeft={isCollapsed ? undefined : "10%"}>
+            <Box>
               <Item
                 title="Trang chủ"
                 to="/"

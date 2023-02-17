@@ -21,7 +21,8 @@ import { useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 import Dropzone from 'react-dropzone';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
-
+import { CKEditor } from '@ckeditor/ckeditor5-react';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
 let initialValuesSanPham = {
   tenSanPham: '',
   manHinh: '',
@@ -34,7 +35,7 @@ let initialValuesSanPham = {
   sim: '',
   pin: '',
   sac: '',
-  moTa: '',
+  // moTa: '',
   picture: '',
   idLoaiSP: '',
   idHangDT: '',
@@ -63,6 +64,7 @@ const sanPhamSchema = yup.object().shape({
   idHangDT: yup.string().required('Không được để trống'),
 });
 const FormSanPham = () => {
+  const [moTa, setMoTa] = useState(null);
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const idSP = searchParams.get('idSP');
@@ -76,12 +78,13 @@ const FormSanPham = () => {
   const [oldAnhDaiDien, setOldAnhDaiDien] = useState('undefined');
   const handleFormSubmit = (values, onSubmitProps) => {
     const formData = new FormData();
-    for (let value in values) {
-      formData.append(value, values[value]);
-    }
     if (idSP) {
+      for (let value in values) {
+        formData.append(value, values[value]);
+      }
       formData.append('oldAnhDaiDien', oldAnhDaiDien);
       formData.append('newAnhDaiDien', values.picture.name);
+      formData.append('moTa', moTa);
       //Post data update san pham
       axios
         .put(`http://localhost:3000/api/sanphams/${idSP}`, formData, {
@@ -93,14 +96,20 @@ const FormSanPham = () => {
           if (response.status === 200) {
             //console.log(response.data.result);
             alert('Cập nhật sản phẩm thành công.');
-            navigate("/sanpham");
+            navigate('/sanpham');
           }
         })
         .catch((err) => {
           console.log(err);
         });
     } else {
+      for (let value in values) {
+        formData.append(value, values[value]);
+        //console.log(value);
+      }
       formData.append('anhDaiDien', values.picture.name);
+      formData.append('moTa', moTa);
+      // console.log(moTa);
       //console.log(values);
       //Post data them san pham
       axios
@@ -113,16 +122,16 @@ const FormSanPham = () => {
           if (response.status === 201) {
             //console.log(response.data.result);
             alert('Thêm sản phẩm thành công.');
-            navigate("/sanpham");
+            navigate('/sanpham');
           }
         })
         .catch((err) => {
           console.log(err);
         });
-    }
-    onSubmitProps.resetForm();
-  };
 
+      onSubmitProps.resetForm();
+    }
+  };
   const getAllLoaiSP = async () => {
     const response = await axios.get(`http://localhost:3000/api/loaisanphams`, {
       headers: {
@@ -170,7 +179,6 @@ const FormSanPham = () => {
         sim: response.data.result.sim,
         pin: response.data.result.pin,
         sac: response.data.result.sac,
-        moTa: response.data.result.moTa,
         picture: '',
         idLoaiSP: response.data.result.idLoaiSP,
         idHangDT: response.data.result.idHangDT,
@@ -182,6 +190,9 @@ const FormSanPham = () => {
         spNoiBat: response.data.result.spNoiBat,
         trangThai: response.data.result.trangThai,
       };
+      if (response.data.result.moTa) {
+        setMoTa(response.data.result.moTa)
+      }
       if (response.data.result.anhDaiDien) {
         setOldAnhDaiDien(response.data.result.anhDaiDien);
       }
@@ -323,7 +334,10 @@ const FormSanPham = () => {
                         <Box
                           {...getRootProps()}
                           border={`2px dashed ${colors.blueAccent[700]}`}
-                          sx={{ '&:hover': { cursor: 'pointer' }, height: "100%" }}
+                          sx={{
+                            '&:hover': { cursor: 'pointer' },
+                            height: '100%',
+                          }}
                         >
                           <input {...getInputProps()} />
                           {!values.picture ? (
@@ -343,31 +357,28 @@ const FormSanPham = () => {
                       )}
                     </Dropzone>
                   </Box>
-                    <TextField
-                      label="Màn hình"
-                      onBlur={handleBlur}
-                      onChange={handleChange}
-                      value={values.manHinh}
-                      name="manHinh"
-                      error={
-                        Boolean(touched.manHinh) && Boolean(errors.manHinh)
-                      }
-                      helperText={touched.manHinh && errors.manHinh}
-                      sx={{ gridColumn: 'span 1' }}
-                    />
-                    <TextField
-                      label="Hệ điều hành"
-                      onBlur={handleBlur}
-                      onChange={handleChange}
-                      value={values.heDieuHanh}
-                      name="heDieuHanh"
-                      error={
-                        Boolean(touched.heDieuHanh) &&
-                        Boolean(errors.heDieuHanh)
-                      }
-                      helperText={touched.heDieuHanh && errors.heDieuHanh}
-                      sx={{ gridColumn: 'span 1' }}
-                    />
+                  <TextField
+                    label="Màn hình"
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    value={values.manHinh}
+                    name="manHinh"
+                    error={Boolean(touched.manHinh) && Boolean(errors.manHinh)}
+                    helperText={touched.manHinh && errors.manHinh}
+                    sx={{ gridColumn: 'span 1' }}
+                  />
+                  <TextField
+                    label="Hệ điều hành"
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    value={values.heDieuHanh}
+                    name="heDieuHanh"
+                    error={
+                      Boolean(touched.heDieuHanh) && Boolean(errors.heDieuHanh)
+                    }
+                    helperText={touched.heDieuHanh && errors.heDieuHanh}
+                    sx={{ gridColumn: 'span 1' }}
+                  />
                   <TextField
                     label="Camera trước"
                     onBlur={handleBlur}
@@ -483,7 +494,7 @@ const FormSanPham = () => {
                     helperText={touched.giaBan && errors.giaBan}
                     sx={{ gridColumn: 'span 1' }}
                   />
-                  
+
                   <FormControl
                     sx={{ display: 'flex', justifyContent: 'space-between' }}
                   >
@@ -529,7 +540,6 @@ const FormSanPham = () => {
                             value={1}
                             control={<Radio />}
                             label="Yes"
-
                           />
                           <FormControlLabel
                             value={0}
@@ -558,7 +568,6 @@ const FormSanPham = () => {
                             value={1}
                             control={<Radio />}
                             label="Yes"
-
                           />
                           <FormControlLabel
                             value={0}
@@ -570,7 +579,7 @@ const FormSanPham = () => {
                     </Box>
                   </FormControl>
 
-                  <TextField
+                  {/* <TextField
                     label="Thông tin sản phẩm"
                     multiline
                     rows="4"
@@ -581,16 +590,47 @@ const FormSanPham = () => {
                     error={Boolean(touched.moTa) && Boolean(errors.moTa)}
                     helperText={touched.moTa && errors.moTa}
                     sx={{ gridColumn: 'span 4' }}
-                  />
-
+                  /> */}
+                  <Box sx={{ gridColumn: 'span 4' }}>
+                    <CKEditor
+                      id="editor"
+                      editor={ClassicEditor}
+                      data={moTa}
+                      onReady={(editor) => {
+                        editor.editing.view.change((writer) => {
+                          writer.setStyle(
+                            'height',
+                            '200px',
+                            editor.editing.view.document.getRoot()
+                          );
+                        });
+                      }}
+                      onChange={(event, editor) => {
+                        const data = editor.getData();
+                        setMoTa(data);
+                        //console.log( { event, editor, data } );
+                      }}
+                      onBlur={(event, editor) => {
+                        //console.log('Blur.', editor);
+                      }}
+                      onFocus={(event, editor) => {
+                        //console.log('Focus.', editor);
+                      }}
+                    />
+                  </Box>
+                  {/* {moTa} */}
+                  {/* {<div dangerouslySetInnerHTML={{ __html: moTa }} />} */}
                   <Box sx={{ gridColumn: 'span 4', margin: '10px auto' }}>
                     <Button
                       type="submit"
                       sx={{
-                        width: "200px",
+                        width: '200px',
                         padding: '20px 30px',
                         background: colors.greenAccent[600],
-                        ':hover': { background: colors.greenAccent[400], color: 'black' },
+                        ':hover': {
+                          background: colors.greenAccent[400],
+                          color: 'black',
+                        },
                       }}
                     >
                       {idSP ? 'Cập nhật' : 'Thêm'}
