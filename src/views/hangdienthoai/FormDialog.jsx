@@ -14,7 +14,7 @@ import { useState } from 'react';
 import { Formik } from 'formik';
 import * as yup from 'yup';
 import axios from "axios";
-
+import { toast } from 'react-toastify';
 const initialValues = {
   tenHang: '',
 };
@@ -47,7 +47,7 @@ const FormDialog = ({data, setData}) => {
       })
       .then((response) => {
         if (response.status === 201) {
-          alert('Thêm hãng điện thoại thành công');
+          toast.success('Thêm hãng điện thoại thành công');
           //console.log(...data);
           // const result = {
           //     id: response.data.result._id,

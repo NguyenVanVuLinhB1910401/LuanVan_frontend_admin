@@ -13,56 +13,58 @@ import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
 
 const DSSPDaNhap = () => {
-    const theme = useTheme();
-    const colors = tokens(theme.palette.mode);
-    const token = useSelector((state) => state.token);
-    const navigate = useNavigate();
-    const columns = [
-        { field: '_id', headerName: 'ID', flex: 1 },
-        { field: 'idSP', headerName: 'Tên sản phẩm', flex: 2, valueGetter: (params) => params.row.idSP?.tenSanPham},
-        { field: 'idCN', headerName: "Tên chi nhánh", flex: 2, valueGetter: (params) => params.row.idCN?.tenChiNhanh},
-        { field: 'idNCC', headerName: "Tên nhà cung cấp", flex: 2, valueGetter: (params) => params.row.idNCC?.tenNCC},
-        { field: 'soLuong', headerName: "Số lượng", flex: 1, headerAlign: 'center', align: 'center',},
-        { field: 'gia', headerName: "Giá", flex: 1.5, valueGetter: (params) => parseInt(params.row.gia).toLocaleString('it-IT', {
-            style: 'currency',
-            currency: 'VND',
-          })},
-        {
-          field: 'action',
-          headerName: 'Hành động',
-          flex: 1.5,
-    
-          renderCell: (cellValues) => (
-            <Box display="flex" gap={2}>
-              <Button variant="outlined" onClick={() => { handleClickOpen(); getPhieuNhap(cellValues.row.idPhieuNhapXuat)}}>
-                Xem chi tiết
-              </Button>
-            </Box>
-          ),
-        },
-      ];
-      // Hien dialog
-      const [open, setOpen] = useState(false);
-      const handleClickOpen = () => {
-        setOpen(true);
-      };
-    
-      const handleHuy = () => {
-        setOpen(false);
-      };
-      const [data, setData] = useState([]);
-      //API GET DATA BACKEND
+  const theme = useTheme();
+  const colors = tokens(theme.palette.mode);
+  const token = useSelector((state) => state.token);
+  const navigate = useNavigate();
+  const columns = [
+    { field: '_id', headerName: 'ID', flex: 1 },
+    { field: 'idSP', headerName: 'Tên sản phẩm', flex: 2, valueGetter: (params) => params.row.idSP?.tenSanPham },
+    { field: 'idCN', headerName: "Tên chi nhánh", flex: 2, valueGetter: (params) => params.row.idCN?.tenChiNhanh },
+    { field: 'idNCC', headerName: "Tên nhà cung cấp", flex: 2, valueGetter: (params) => params.row.idNCC?.tenNCC },
+    { field: 'soLuong', headerName: "Số lượng", flex: 1, headerAlign: 'center', align: 'center', },
+    {
+      field: 'gia', headerName: "Giá", flex: 1.5, valueGetter: (params) => parseInt(params.row.gia).toLocaleString('it-IT', {
+        style: 'currency',
+        currency: 'VND',
+      })
+    },
+    {
+      field: 'action',
+      headerName: 'Hành động',
+      flex: 1.5,
+
+      renderCell: (cellValues) => (
+        <Box display="flex" gap={2}>
+          <Button variant="outlined" onClick={() => { handleClickOpen(); getPhieuNhap(cellValues.row.idPhieuNhapXuat) }}>
+            Xem chi tiết
+          </Button>
+        </Box>
+      ),
+    },
+  ];
+  // Hien dialog
+  const [open, setOpen] = useState(false);
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleHuy = () => {
+    setOpen(false);
+  };
+  const [data, setData] = useState([]);
+  //API GET DATA BACKEND
   const getAllDSSPDaNhap = () => {
     axios.get("http://localhost:3000/api/nhapxuatkho/danhsachsanphamdanhap", {
       headers: {
         Authorization: `Bearer ${token}`
       }
     }).then((response) => {
-        if(response.status === 200){
-            const data = response.data.result;
-            //console.log(data);
-            setData(data);
-        }
+      if (response.status === 200) {
+        const data = response.data.result;
+        //console.log(data);
+        setData(data);
+      }
     }).catch((err) => console.log(err))
   };
   const generatePDF = () => {
@@ -106,8 +108,8 @@ const DSSPDaNhap = () => {
   useEffect(() => {
     getAllDSSPDaNhap();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
-    return (
-        <Box m="15px">
+  return (
+    <Box m="15px">
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <Box>
           <Typography variant="h2" color={colors.grey[100]} fontWeight="bold">
@@ -123,7 +125,7 @@ const DSSPDaNhap = () => {
           '& .MuiDialog-container': {
             '& .MuiPaper-root': {
               width: '100%',
-              maxWidth: '80%', 
+              maxWidth: '80%',
               background: "#fff",
               color: "black"
             },
@@ -132,55 +134,58 @@ const DSSPDaNhap = () => {
       >
         <DialogContent id="chitietphieunhap">
           <Box >
-          <Box>
+            <Box>
               <Typography fontSize="30px" fontWeight="bold" textAlign="center">
                 Chi Tiết Phiếu Nhập
               </Typography>
             </Box>
             <Box display="flex" justifyContent="space-between">
-            
-            <Box display="flex" p="5px">
-              <Box>
-                <Typography fontSize="18px" fontWeight="bold">
-                  Mã phiếu nhập:
-                </Typography>
+
+              <Box display="flex" p="5px">
+                <Box>
+                  <Typography fontSize="18px" fontWeight="bold">
+                    Mã phiếu nhập:
+                  </Typography>
+                </Box>
+                <Box paddingLeft="10px">
+                  <Typography fontSize="18px">{phieuNhap.result?._id}</Typography>
+                </Box>
               </Box>
-              <Box paddingLeft="10px">
-                <Typography fontSize="18px">{phieuNhap.result?._id}</Typography>
-              </Box>
-            </Box>
-            
-            <Box display="flex" p="5px">
-              <Box>
-                <Typography fontSize="18px" fontWeight="bold">Ngày nhập:</Typography>
-              </Box>
-              <Box>
-                <Typography fontSize="18px" paddingLeft="10px">{phieuNhap.result?.dateTime}</Typography>
-              </Box>
-            </Box>
-            </Box>
-            <Box display="flex" >
-            <Box display="flex" p="5px" marginRight="10px">
-              <Box>
-                <Typography fontSize="18px" fontWeight="bold">
-                  Người nhập hàng:
-                </Typography>
-              </Box>
-              <Box paddingLeft="10px">
-                <Typography fontSize="18px">
-                  {phieuNhap.result?.idUser[0].hoTen}
-                </Typography>
+
+              <Box display="flex" p="5px">
+                <Box>
+                  <Typography fontSize="18px" fontWeight="bold">Ngày nhập:</Typography>
+                </Box>
+                <Box>
+                  <Typography fontSize="18px" paddingLeft="10px">{phieuNhap.result?.dateTime}</Typography>
+                </Box>
               </Box>
             </Box>
-            <Box display="flex" p="5px">
-              <Box>
-                <Typography fontSize="18px" fontWeight="bold">Nội dung nhập hàng:</Typography>
+
+            <Box>
+              <Box display="flex" p="5px" marginRight="10px">
+                <Box>
+                  <Typography fontSize="18px" fontWeight="bold">
+                    Người nhập hàng:
+                  </Typography>
+                </Box>
+                <Box paddingLeft="10px">
+                  <Typography fontSize="18px">
+                    {phieuNhap.result?.idUser[0].hoTen}
+                  </Typography>
+                </Box>
               </Box>
-              <Box>
-                <Typography fontSize="18px" paddingLeft="10px">{phieuNhap.result?.noiDung}</Typography>
+
+              <Box display="flex" p="5px">
+                <Box>
+                  <Typography fontSize="18px" fontWeight="bold">Nội dung nhập hàng:</Typography>
+                </Box>
+                <Box>
+                  <Typography fontSize="18px" paddingLeft="10px">{phieuNhap.result?.noiDung}</Typography>
+                </Box>
               </Box>
             </Box>
-            </Box>
+
             <Box>
               <Box
                 display="grid"
@@ -199,12 +204,12 @@ const DSSPDaNhap = () => {
                   <Typography fontSize="18px" fontWeight="bold" sx={{ gridColumn: 'span 4' }}>
                     Tên chi nhánh
                   </Typography>
-                  <Typography  fontSize="18px" fontWeight="bold" sx={{ gridColumn: 'span 4' }}>
+                  <Typography fontSize="18px" fontWeight="bold" sx={{ gridColumn: 'span 4' }}>
                     Tên nhà cung cấp
                   </Typography>
                   <Typography
-                  fontSize="18px"
-                  fontWeight="bold"
+                    fontSize="18px"
+                    fontWeight="bold"
                     sx={{ gridColumn: 'span 2', textAlign: 'center' }}
                   >
                     Số lượng
@@ -233,7 +238,7 @@ const DSSPDaNhap = () => {
                     >
                       <>
                         <Typography
-                           fontSize="18px"
+                          fontSize="18px"
                           sx={{
                             gridColumn: 'span 1',
                             display: 'flex',
@@ -244,7 +249,7 @@ const DSSPDaNhap = () => {
                           {index + 1}
                         </Typography>
                         <Typography
-                        fontSize="18px"
+                          fontSize="18px"
                           sx={{
                             gridColumn: 'span 5',
                             display: 'flex',
@@ -254,7 +259,7 @@ const DSSPDaNhap = () => {
                           {sp.idSP[0].tenSanPham}
                         </Typography>
                         <Typography
-                        fontSize="18px"
+                          fontSize="18px"
                           sx={{
                             gridColumn: 'span 4',
                             display: 'flex',
@@ -264,7 +269,7 @@ const DSSPDaNhap = () => {
                           {sp.idCN[0].tenChiNhanh}
                         </Typography>
                         <Typography
-                        fontSize="18px"
+                          fontSize="18px"
                           sx={{
                             gridColumn: 'span 4',
                             display: 'flex',
@@ -274,7 +279,7 @@ const DSSPDaNhap = () => {
                           {sp.idNCC[0].tenNCC}
                         </Typography>
                         <Typography
-                        fontSize="18px"
+                          fontSize="18px"
                           sx={{
                             gridColumn: 'span 2',
                             display: 'flex',
@@ -285,7 +290,7 @@ const DSSPDaNhap = () => {
                           {sp.soLuong}
                         </Typography>
                         <Typography
-                        fontSize="18px"
+                          fontSize="18px"
                           sx={{
                             gridColumn: 'span 4',
                             display: 'flex',
@@ -299,7 +304,7 @@ const DSSPDaNhap = () => {
                           })}
                         </Typography>
                         <Typography
-                        fontSize="18px"
+                          fontSize="18px"
                           sx={{
                             gridColumn: 'span 4',
                             display: 'flex',
@@ -333,7 +338,7 @@ const DSSPDaNhap = () => {
                   <Typography fontSize="20px" fontWeight="bold" sx={{ gridColumn: 'span 20', textAlign: 'end' }}>
                     Tổng tiền:
                   </Typography>
-                  <Typography  fontSize="20px" fontWeight="bold" sx={{ gridColumn: 'span 4', textAlign: 'end' }}>
+                  <Typography fontSize="20px" fontWeight="bold" sx={{ gridColumn: 'span 4', textAlign: 'end' }}>
                     {parseInt(phieuNhap.result?.total).toLocaleString('it-IT', {
                       style: 'currency',
                       currency: 'VND',
@@ -394,7 +399,7 @@ const DSSPDaNhap = () => {
         />
       </Box>
     </Box>
-    );
+  );
 };
 
 export default DSSPDaNhap;

@@ -51,6 +51,7 @@ const PhieuNhap = () => {
           },
         })
         .then((response) => {
+          //console.log(response);
           if (response.status === 200) {
             // const data = response.data.result.map((res) => {
             //     return {id: res._id, tenLoaiSP: res.tenLoaiSP};

@@ -23,6 +23,7 @@ import Dropzone from 'react-dropzone';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
 import { CKEditor } from '@ckeditor/ckeditor5-react';
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import { toast } from 'react-toastify';
 let initialValuesSanPham = {
   tenSanPham: '',
   manHinh: '',
@@ -41,7 +42,7 @@ let initialValuesSanPham = {
   idHangDT: '',
   giaBan: '',
   giaGoc: '',
-  idKhuyenMai: '',
+  khuyenMai: 0,
   dsAnh: [],
   spMoi: 1,
   spNoiBat: 1,
@@ -95,7 +96,7 @@ const FormSanPham = () => {
         .then((response) => {
           if (response.status === 200) {
             //console.log(response.data.result);
-            alert('Cập nhật sản phẩm thành công.');
+            toast.success('Cập nhật sản phẩm thành công.');
             navigate('/sanpham');
           }
         })
@@ -121,7 +122,7 @@ const FormSanPham = () => {
         .then((response) => {
           if (response.status === 201) {
             //console.log(response.data.result);
-            alert('Thêm sản phẩm thành công.');
+            toast.success('Thêm sản phẩm thành công.');
             navigate('/sanpham');
           }
         })
@@ -184,7 +185,7 @@ const FormSanPham = () => {
         idHangDT: response.data.result.idHangDT,
         giaBan: response.data.result.giaBan ?? '',
         giaGoc: response.data.result.giaGoc ?? '',
-        idKhuyenMai: '',
+        khuyenMai: response.data.result.khuyenMai ?? 0,
         dsAnh: [],
         spMoi: response.data.result.spMoi,
         spNoiBat: response.data.result.spNoiBat,
@@ -492,6 +493,18 @@ const FormSanPham = () => {
                     name="giaBan"
                     error={Boolean(touched.giaBan) && Boolean(errors.giaBan)}
                     helperText={touched.giaBan && errors.giaBan}
+                    sx={{ gridColumn: 'span 1' }}
+                  />
+
+                  <TextField
+                    type="number"
+                    label="Khuyến mãi"
+                    onBlur={handleBlur}
+                    onChange={handleChange}
+                    value={values.khuyenMai}
+                    name="khuyenMai"
+                    error={Boolean(touched.khuyenMai) && Boolean(errors.khuyenMai)}
+                    helperText={touched.khuyenMai && errors.khuyenMai}
                     sx={{ gridColumn: 'span 1' }}
                   />
 

@@ -1,15 +1,17 @@
-import { Box, Typography, Button, TextField } from '@mui/material';
+import { Box, Typography, Button, TextField, FormControl, FormLabel, Radio, FormControlLabel, RadioGroup } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import { Formik } from 'formik';
+import {  Field, Formik } from 'formik';
 import * as yup from 'yup';
 import { useTheme } from '@mui/material';
 import { tokens } from '../../theme';
 import axios from 'axios';
 import { useDispatch } from 'react-redux';
 import { setLogin } from '../../state';
+import { toast } from 'react-toastify';
 const initialValues = {
   taiKhoan: '',
   matKhau: '',
+  loaiNguoiDung: "Admin"
 };
 
 const loginSchema = yup.object().shape({
@@ -34,11 +36,12 @@ const Login = () => {
             })
           );
           navigate('/');
+          toast.success("Đăng nhập thành công");
         }
       })
       .catch((res) => {
         if (res.response.status === 400) {
-          alert(res.response.data.message);
+          toast.error(res.response.data.message);
         }
       });
   };
@@ -103,6 +106,34 @@ const Login = () => {
                   error={Boolean(touched.matKhau) && Boolean(errors.matKhau)}
                   helperText={touched.matKhau && errors.matKhau}
                 />
+
+                <FormControl
+                    
+                  >
+                    <Box display="flex" gap={3} alignItems="center" justifyContent="center">
+                      <FormLabel>Loại người dùng:</FormLabel>
+                      <Field
+                        as={RadioGroup}
+                        onBlur={handleBlur}
+                        onChange={handleChange}
+                        value={values.loaiNguoiDung}
+                        name="loaiNguoiDung"
+                      >
+                        <Box display="flex">
+                          <FormControlLabel
+                            value="Admin"
+                            control={<Radio />}
+                            label="Admin"
+                          />
+                          <FormControlLabel
+                            value="Nhân Viên"
+                            control={<Radio />}
+                            label="Nhân Viên"
+                          />
+                        </Box>
+                      </Field>
+                    </Box>
+                  </FormControl>
 
                 <Button
                   type="submit"

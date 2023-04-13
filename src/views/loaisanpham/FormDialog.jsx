@@ -9,6 +9,7 @@ import { Formik } from 'formik';
 import * as yup from 'yup';
 import axios from 'axios';
 import { useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
 const initialValues = {
   tenLoaiSP: '',
 };
@@ -37,7 +38,7 @@ const FormDialog = ({ data, setData }) => {
       })
       .then((response) => {
         if (response.status === 201) {
-          alert('Thêm loại sản phẩm thành công');
+          toast.success('Thêm loại sản phẩm thành công');
           //console.log(...data);
           // const result = {
           //     id: response.data.result._id,

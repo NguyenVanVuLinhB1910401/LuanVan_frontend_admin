@@ -6,6 +6,7 @@ import FormDialog from './FormDialog';
 import { useState, useEffect } from 'react';
 import axios from "axios";
 import { useSelector } from 'react-redux';
+import { toast } from 'react-toastify';
 const HangDienThoai = () => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
@@ -21,23 +22,13 @@ const HangDienThoai = () => {
           renderCell: (cellValues) => (
             <Box display="flex" gap={2}>
               <Button
-                sx={{
-                  backgroundColor: colors.greenAccent[600],
-                  '&:hover': {
-                    backgroundColor: colors.greenAccent[500],
-                  },
-                }}
-              >
-                Cập nhật
-              </Button>
-              <Button
               sx={{
                 backgroundColor: colors.redAccent[600],
                 '&:hover': {
                   backgroundColor: colors.redAccent[500],
                 },
               }}
-              onClick={() => handleDeleteHangDT(cellValues.row._id)}
+              onClick={() => handleDeleteHangDT(cellValues.row._id, cellValues.row.tenHang)}
               >Xóa</Button>
             </Box>
           ),
@@ -60,18 +51,20 @@ const HangDienThoai = () => {
         }
     }).catch((err) => console.log(err))
   };
-  const handleDeleteHangDT = async (id) => {
-        axios.delete("http://localhost:3000/api/hangdienthoais/"+id,  {
+  const handleDeleteHangDT = async (id, tenHang) => {
+        if(window.confirm(`Bạn có chắc muốn xóa hãng điện thoại ${tenHang}?`)){
+          axios.delete("http://localhost:3000/api/hangdienthoais/"+id,  {
           headers: {
             Authorization: `Bearer ${token}`
           }
         }).then((res) => {
             if(res.status === 200){
-                alert("Xóa hãng điện thành công");
+                toast.success("Xóa hãng điện thành công");
                 setData(data.filter((dt) => dt._id !== id))
                 
             }
         }).catch((err) => console.log(err))
+        }
   };
 
   useEffect(() => {

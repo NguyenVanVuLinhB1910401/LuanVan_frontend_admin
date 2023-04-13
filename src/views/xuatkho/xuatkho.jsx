@@ -17,6 +17,7 @@ import { useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
 import Dropzone from 'react-dropzone';
 import EditOutlinedIcon from '@mui/icons-material/EditOutlined';
+import { toast } from 'react-toastify';
 
 let initialValues = {
   idSP: '',
@@ -104,13 +105,7 @@ const XuatKho = () => {
     setDSSanPham(dsSanPham.filter((pro) => pro.idSP !== dsSanPham[index].idSP));
   };
 
-  const dateTime = () => {
-    var today = new Date();
-    var date = (today.getMonth()+1)+'/'+today.getDate()+'/'+ today.getFullYear();
-    var time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
-    var dateTime = date+' '+time;
-    return dateTime;
-  }
+  
 
   const handleNhapKho = () => {
     const data = {
@@ -123,7 +118,7 @@ const XuatKho = () => {
       data.noiDung = noiDung;
       data.dsSanPham = dsSanPham;
       data.total = total;
-      data.dateTime = dateTime();
+      data.dateTime = new Date();
       //console.log(data);
       axios
       .post(`http://localhost:3000/api/nhapxuatkho/xuatkho`, data, {
@@ -132,13 +127,10 @@ const XuatKho = () => {
         },
       })
       .then((response) => {
-        if (response.status === 201) {
-          //console.log(response.data);
-          alert("Xuất kho thành công");
-          navigate("/xuatkho");
-        }
-        if (response.status === 200) {
-          alert(response.data.message);
+        if (response.status === 201 && response.data.code === 1) {
+          toast.success(response.data.msg);
+        }else {
+          toast.error("Xuất hàng thất bại");
         }
       })
       .catch((err) => console.log(err));
@@ -212,7 +204,7 @@ const XuatKho = () => {
                     >
                       {sanPham.map((pro) => (
                         <MenuItem key={`${pro._id}`} value={pro._id}>
-                          {pro.tenSanPham + ' ' + pro.dungLuong + 'GB'}
+                          {pro.tenSanPham}
                         </MenuItem>
                       ))}
                     </TextField>

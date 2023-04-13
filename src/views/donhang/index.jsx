@@ -1,4 +1,11 @@
-import { Box, Typography, Button, IconButton } from '@mui/material';
+import {
+  Box,
+  Typography,
+  Button,
+  IconButton,
+  TextField,
+  MenuItem,
+} from '@mui/material';
 import { useTheme } from '@mui/material';
 import { tokens } from '../../theme';
 import { DataGrid } from '@mui/x-data-grid';
@@ -11,11 +18,13 @@ import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
 import DetailsIcon from '@mui/icons-material/Details';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { toast } from 'react-toastify';
 const DonHang = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
   const token = useSelector((state) => state.token);
   const [open, setOpen] = useState(false);
+  let nf = new Intl.NumberFormat('vi-VN');
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -49,6 +58,7 @@ const DonHang = () => {
         },
       })
       .then((response) => {
+        console.log(response);
         if (response.status === 200) {
           // const data = response.data.result.map((res) => {
           //     return {id: res._id, tenLoaiSP: res.tenLoaiSP};
@@ -61,66 +71,180 @@ const DonHang = () => {
       .catch((err) => console.log(err));
   };
   const deleteDonHang = (id) => {
-    axios
+    if(window.confirm("Bạn có chắc muốn xóa đơn hàng?")){
+      axios
       .delete('http://localhost:3000/api/donhangs/' + id, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       })
       .then((res) => {
-        if (res.status === 200) {
-          alert('Xóa đơn hàng thành công');
+        if (res.status === 200 && res.data.code === 1) {
+          toast.success('Xóa đơn hàng thành công');
           setData(data.filter((dt) => dt._id !== id));
+        }else {
+          toast.error('Xóa đơn hàng thất bại')
         }
       })
       .catch((err) => console.log(err));
+    }
+  };
+  const updateStatus = async (id, status) => {
+    const result = await axios.put(
+      'http://localhost:3000/api/donhangs/' + id,
+      { status: status },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    if (result.status === 200) {
+      const donHang = data.find((item) => item._id === id);
+      donHang.status = result.data.donHang.status;
+      //apiRef.current.updateRows(donHang);
+
+      // console.log(donHang);
+      // console.log(data);
+      setData(data);
+      //setData(data.filter((dt) => dt._id !== id));
+      toast.success('Cập nhật trạng thái đơn hàng thành công');
+    }
   };
   const columns = [
-    {
-      field: 'idCN',
-      headerName: 'Chi nhánh',
-      flex: 1.5,
-      valueGetter: (params) => params.row.idCN.tenChiNhanh,
-    },
-    // { field: 'idKH', headerName: 'Tài khoản', flex: 2, valueGetter: (params) => params.row.idKH.hoTen },
+    { field: 'idCNDH', headerName: 'Chi nhánh', flex: 1.5, valueGetter: (params) => params.row.idCNDH.tenChiNhanh },
     { field: 'hoTen', headerName: 'Họ tên', flex: 2 },
-    { field: 'sdt', headerName: 'Số điện thoại', flex: 1.5 },
+    { field: 'sdt', headerName: 'Số điện thoại', flex: 1 },
     // { field: 'email', headerName: "Email", flex: 1.5},
-    { field: 'total', headerName: 'Tổng tiền', flex: 1.5 },
-    { field: 'httt', headerName: 'HTTT', flex: 1.5 },
-    { field: 'status', headerName: 'Trạng thái', flex: 1.5 },
-    { field: 'ngayDat', headerName: 'Ngày đặt', flex: 2 },
-    // {
-    //   field: 'trangThai',
-    //   headerName: 'Trạng thái',
-    //   flex: 1.5,
-    //   valueGetter: (params) => params.row?.trangThai === 1 ? "Đang dùng" : "Bị khóa"
-    // },
+    { field: 'total', headerName: 'Tổng tiền', flex: 1.3, valueGetter: (params) =>nf.format(params.row.total) },
+    { field: 'htnh', headerName: 'HTNH', flex: 1.2, valueGetter: (params) => params.row.htnh  === "GHTN" ? "Giao hàng tận nơi" : "Nhận tại cửa hàng" },
+    { field: 'httt', headerName: 'HTTT', flex: 1.2 },
+    { field: 'ngayDat', headerName: 'Ngày đặt', flex: 1.7, valueGetter: (params) => new Date(params.row.ngayDat).toLocaleString('en-GB', {
+      hour12: false,
+    })},
+    {
+      field: 'status',
+      headerName: 'Trạng thái',
+      flex: 1.5,
+      renderCell: (cellValues) => {
+        if (
+          cellValues.row.status === 'Chưa xử lý' ||
+          cellValues.row.status === 'Đã thanh toán'
+        ) {
+          return (
+            <Button
+              variant="contained"
+              onClick={() => updateStatus(cellValues.row._id, 'Đã xử lý')}
+              sx={{
+                width: '130px',
+                background: '#66ffb3',
+                ':hover': {
+                  cursor: 'pointer',
+                  background: '#33ff99',
+                },
+              }}
+            >
+              Chưa xử lý
+            </Button>
+          );
+        } else if (cellValues.row.status === 'Đã xử lý') {
+          return (
+            <Button
+              variant="contained"
+              onClick={() => updateStatus(cellValues.row._id, 'Đang giao hàng')}
+              sx={{
+                width: '130px',
+                background: '#66ffb3',
+                ':hover': {
+                  cursor: 'pointer',
+                  background: '#33ff99',
+                },
+              }}
+            >
+              Đã xử lý
+            </Button>
+          );
+        } else if (cellValues.row.status === 'Đang giao hàng') {
+          return (
+            <Button
+              variant="contained"
+              onClick={() => updateStatus(cellValues.row._id, 'Đã hoàn thành')}
+              sx={{
+                width: '130px',
+                background: '#66ffb3',
+                ':hover': {
+                  cursor: 'pointer',
+                  background: '#33ff99',
+                },
+              }}
+            >
+              Đang giao hàng
+            </Button>
+          );
+        } else if (cellValues.row.status === 'Đã hoàn thành') {
+          return (
+            <Button variant="contained" color="success" sx={{ width: '130px' }}>
+              {cellValues.row.status}
+            </Button>
+          );
+        } else if (cellValues.row.status === 'Đã hủy') {
+          return (
+            <Box>
+              <Button
+                variant="contained"
+                sx={{
+                  width: '130px',
+                }}
+              >
+                {cellValues.row.status}
+              </Button>
+            </Box>
+          );
+        } else {
+          return (
+            <Button
+              variant="contained"
+              sx={{
+                width: '130px',
+              }}
+            >
+              {cellValues.row.status}
+            </Button>
+          );
+        }
+      },
+    },
     {
       field: 'action',
       headerName: 'Hành động',
-      flex: 1.5,
+      flex: 1,
 
       renderCell: (cellValues) => (
-        <Box display="flex" gap={2}>
+        <Box display="flex">
           <IconButton
             onClick={() => {
               handleClickOpen();
-              getDonHang(cellValues.row._id);
+              getDonHang(cellValues.row._id+"?htnh="+cellValues.row.htnh);
             }}
           >
             <DetailsIcon />
           </IconButton>
-          <IconButton
+          <IconButton onClick={() => {
+            if(cellValues.row.status === "Đã hủy"){
+              deleteDonHang(cellValues.row._id)
+            }else {
+              toast.warning("Chỉ xóa được các đơn hàng đã hủy!!!")
+            }
             
-            onClick={() => deleteDonHang(cellValues.row._id)}
-          >
-            <DeleteIcon sx={{
-              color: colors.redAccent[600],
-              '&:hover': {
-                color: colors.redAccent[500],
-              },
-            }} />
+          }}>
+            <DeleteIcon
+              sx={{
+                color: colors.redAccent[600],
+                '&:hover': {
+                  color: colors.redAccent[500],
+                },
+              }}
+            />
           </IconButton>
         </Box>
       ),
@@ -136,7 +260,7 @@ const DonHang = () => {
         },
       })
       .then((response) => {
-        console.log(response);
+        //console.log(response);
         if (response.status === 200) {
           // const data = response.data.result.map((res) => {
           //     return {id: res._id, tenLoaiSP: res.tenLoaiSP};
@@ -224,7 +348,7 @@ const DonHang = () => {
                   Địa chỉ:
                 </Typography>
                 <Typography maxWidth="280px" fontSize="18px">
-                  {donHang.donHang?.diaChi}
+                  {donHang.donHang?.htnh === "NTCH" ? donHang.donHang?.idCNNH.tenChiNhanh +" "+ donHang.donHang?.idCNNH.diaChiChiNhanh : donHang.donHang?.diaChi}
                 </Typography>
                 <Typography fontSize="18px" fontWeight="bold">
                   Ghi chú:
@@ -239,21 +363,6 @@ const DonHang = () => {
                   {donHang.donHang?.email}
                 </Typography>
               </Box>
-              {/* <Box paddingLeft="10px">
-                  
-                </Box> */}
-              {/* <Box display="flex">
-                  
-                </Box> */}
-              {/* <Box paddingLeft="10px">
-                  
-                </Box> */}
-              {/* <Box display="flex">
-                  
-                </Box> */}
-              {/* <Box paddingLeft="10px">
-                  
-                </Box> */}
             </Box>
             <Box display="flex" p="5px">
               <Box>
@@ -486,10 +595,14 @@ const DonHang = () => {
           '& .MuiCheckbox-root': {
             color: `${colors.greenAccent[200]} !important`,
           },
+          '& .MuiDataGrid-root .MuiDataGrid-cell:focus-within': {
+            outline: 'none !important',
+          },
         }}
       >
         <DataGrid
-          checkboxSelection
+          disableSelectionOnClick
+          checkboxSelection={false}
           rows={data}
           columns={columns}
           getRowId={(row) => row._id}

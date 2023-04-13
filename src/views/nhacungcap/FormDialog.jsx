@@ -14,7 +14,7 @@ import {
   import { Formik } from 'formik';
   import * as yup from 'yup';
   import axios from "axios";
-  
+  import { toast } from 'react-toastify';
   const initialValues = {
     tenNCC: '',
     sdtNCC: '',
@@ -53,7 +53,7 @@ import {
         })
         .then((response) => {
           if (response.status === 201) {
-            alert('Thêm nhà cung cấp thành công');
+            toast.success('Thêm nhà cung cấp thành công');
             //console.log(...data);
             // const result = {
             //     id: response.data.result._id,

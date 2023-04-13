@@ -8,6 +8,7 @@ import axios from 'axios';
 
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 const SanPham = () => {
   const theme = useTheme();
@@ -56,7 +57,7 @@ const SanPham = () => {
                 backgroundColor: colors.redAccent[500],
               },
             }}
-            onClick={() => handleDeleteSanPham(cellValues.row._id)}
+            onClick={() => handleDeleteSanPham(cellValues.row._id, cellValues.row.tenSanPham)}
           >
             Xóa
           </Button>
@@ -85,20 +86,23 @@ const SanPham = () => {
       })
       .catch((err) => console.log(err));
   };
-  const handleDeleteSanPham = async (id) => {
-    axios
+  const handleDeleteSanPham = async (id, tenSanPham) => {
+    if(window.confirm(`Bạn có chắc muốn xóa ${tenSanPham}?`)){
+      axios
       .delete('http://localhost:3000/api/sanphams/' + id, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       })
       .then((res) => {
+        //console.log(res);
         if (res.status === 200) {
-          alert('Xóa sản phẩm thành công');
+          toast.success('Xóa sản phẩm thành công');
           setData(data.filter((dt) => dt._id !== id));
         }
       })
       .catch((err) => console.log(err));
+    }
   };
   useEffect(() => {
     getAllSanPham();

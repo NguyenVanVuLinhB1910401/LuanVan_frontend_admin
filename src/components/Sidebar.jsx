@@ -49,6 +49,7 @@ const Item = ({ title, to, icon, selected, setSelected }) => {
             //Ghi de color background
           "& .pro-sidebar-inner": {
             background: `${colors.primary[400]} !important`,
+            
           },
           //Muon phan tu cha trong suot => IconButton trong suốt
           "& .pro-icon-wrapper": {
@@ -64,11 +65,11 @@ const Item = ({ title, to, icon, selected, setSelected }) => {
           "& .pro-menu-item.active": {
             color: "#ff6600 !important",
           },
-          height: "100%",
-          overflowY: "auto"
+          minHeight: "100vh"
+          
         }}
       >
-        <ProSidebar collapsed={isCollapsed}>
+        <ProSidebar collapsed={isCollapsed} >
           <Menu iconShape="square">
             {/* LOGO AND MENU ICON */}
             <MenuItem
@@ -86,7 +87,7 @@ const Item = ({ title, to, icon, selected, setSelected }) => {
                   ml="15px"
                 >
                   <Typography variant="h3" color={colors.grey[100]}>
-                    ADMINIS
+                    Dashboard
                   </Typography>
                   <IconButton onClick={() => setIsCollapsed(!isCollapsed)}>
                     <MenuOutlinedIcon />
@@ -94,7 +95,9 @@ const Item = ({ title, to, icon, selected, setSelected }) => {
                 </Box>
               )}
             </MenuItem>
-  
+              {/* <Box display="flex" justifyContent="center" alignItems="center">
+                <Typography fontSize="30px" fontWeight="bold" sx={{color: "#4cceac"}}>Nhân Viên 1</Typography>
+              </Box> */}
             {/* {!isCollapsed && (
               <Box mb="25px">
                 <Box display="flex" justifyContent="center" alignItems="center">
@@ -132,6 +135,13 @@ const Item = ({ title, to, icon, selected, setSelected }) => {
               <Item
                 title="Quản lý khách hàng"
                 to="/khachhang"
+                icon={<PeopleOutlinedIcon />}
+                selected={selected}
+                setSelected={setSelected}
+              />
+              <Item
+                title="Quản lý nhân viên"
+                to="/nhanvien"
                 icon={<PeopleOutlinedIcon />}
                 selected={selected}
                 setSelected={setSelected}
@@ -202,20 +212,20 @@ const Item = ({ title, to, icon, selected, setSelected }) => {
                 selected={selected}
                 setSelected={setSelected}
               />
-              <Item
+              {/* <Item
                 title="Quản lý khuyến mãi"
                 to="/khuyenmai"
                 icon={<TimelineOutlinedIcon />}
                 selected={selected}
                 setSelected={setSelected}
-              />
-              {/* <Item
-                title="Thống kê"
-                to="/thongke"
-                icon={<MapOutlinedIcon />}
+              /> */}
+              <Item
+                title="Tạo đơn hàng"
+                to="/taodonhang"
+                icon={<TimelineOutlinedIcon />}
                 selected={selected}
                 setSelected={setSelected}
-              /> */}
+              />
             </Box>
           </Menu>
         </ProSidebar>

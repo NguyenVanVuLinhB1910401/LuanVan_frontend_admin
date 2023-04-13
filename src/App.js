@@ -21,6 +21,13 @@ import PhieuXuat from "./views/xuatkho/index";
 import XuatKho from "./views/xuatkho/xuatkho";
 import DSSPDaXuat from "./views/xuatkho/danhsachsanphamdaxuat";
 import DonHang from "./views/donhang";
+import TaoDonHang from "./views/taodonhang/index";
+import ChuyenKho from "./views/khohang/chuyenkho";
+import NhanVien from "./views/nhanvien/index";
+import ThemNhanVien from "./views/nhanvien/themnhanvien";
+import ThongTinChuyenKho from "./views/khohang/thongtinchuyenkho";
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 function App() {
   const [theme, colorMode] = useMode();
   //console.log(useSelector((state) => state.token));
@@ -30,7 +37,7 @@ function App() {
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <div className="app">
-          { isAuth && <Box><Sidebar /></Box>}
+          { isAuth && <Sidebar />}
           <main className="content">
             { isAuth && <Topbar />}
             <Routes>
@@ -51,9 +58,26 @@ function App() {
               <Route path="/phieuxuat/xuatkho" element={isAuth ? <XuatKho /> : <Navigate to="/login" />} />
               <Route path="/phieuxuat/dsspdaxuat" element={isAuth ? <DSSPDaXuat /> : <Navigate to="/login" />} />
               <Route path="/donhang" element={isAuth ? <DonHang /> : <Navigate to="/login" />} />
+              <Route path="/taodonhang" element={isAuth ? <TaoDonHang /> : <Navigate to="/login" />} />
+              <Route path="/chuyenkho" element={isAuth ? <ChuyenKho /> : <Navigate to="/login" />} />
+              <Route path="/thongtinchuyenkho" element={isAuth ? <ThongTinChuyenKho /> : <Navigate to="/login" />} />
+              <Route path="/nhanvien" element={isAuth ? <NhanVien /> : <Navigate to="/login" />} />
+              <Route path="/nhanvien/them" element={isAuth ? <ThemNhanVien /> : <Navigate to="/login" />} />
             </Routes>
           </main>
         </div>
+        <ToastContainer
+          position="top-center"
+          autoClose={3000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme={theme.palette.mode}
+          />
       </ThemeProvider>
     </ColorModeContext.Provider>
   );

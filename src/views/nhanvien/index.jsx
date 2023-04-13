@@ -5,8 +5,9 @@ import { DataGrid } from '@mui/x-data-grid';
 import { useState, useEffect } from 'react';
 import axios from "axios";
 import { useSelector } from 'react-redux';
+import ThemNhanVien from './themnhanvien';
 import { toast } from 'react-toastify';
-const KhachHang = () => {
+const NhanVien = () => {
     const theme = useTheme();
     const colors = tokens(theme.palette.mode);
     const token = useSelector((state) => state.token);
@@ -21,7 +22,7 @@ const KhachHang = () => {
           },
         }
       );
-      console.log(result);
+      //console.log(result);
       if (result.status === 200) {
         const taiKhoan = data.find((item) => item._id === id);
         taiKhoan.trangThai = result.data.trangThai;
@@ -41,38 +42,6 @@ const KhachHang = () => {
         { field: 'sdt', headerName: "Số điện thoại", flex: 1.5},
         { field: 'email', headerName: "Email", flex: 2},
         { field: 'diaChi', headerName: "Địa chỉ", flex: 3},
-        {
-          field: 'trangThai',
-          headerName: 'Trạng thái',
-          flex: 1.5,
-          renderCell: (cellValues) => cellValues.row?.trangThai === 1 ? (<Box>
-            <Button
-                sx={{
-                  backgroundColor: colors.greenAccent[600],
-                  width: '100px',
-                  '&:hover': {
-                    backgroundColor: colors.greenAccent[500],
-                  },
-                }}
-               onClick={() => updateTrangThaiTaiKhoan(cellValues.row?._id, 0)}
-              >
-                Đang dùng
-              </Button>
-          </Box>) : (<Box>
-            <Button
-                sx={{
-                  backgroundColor: colors.redAccent[600],
-                  width: '100px',
-                  '&:hover': {
-                    backgroundColor: colors.redAccent[500],
-                  },
-                }}
-                onClick={() => updateTrangThaiTaiKhoan(cellValues.row?._id, 1)}
-              >
-                Bị khóa
-              </Button>
-          </Box>)
-        },
         // {
         //   field: 'action',
         //   headerName: 'Hành động',
@@ -108,8 +77,8 @@ const KhachHang = () => {
       ];
       const [data, setData] = useState([]);
       //API GET DATA BACKEND
-  const getAllNhaCungCap = () => {
-    axios.get("http://localhost:3000/api/khachhangs", {
+  const getAllNhanVien = () => {
+    axios.get("http://localhost:3000/api/nhanviens", {
       headers: {
         Authorization: `Bearer ${token}`
       }
@@ -125,18 +94,20 @@ const KhachHang = () => {
   };
 
   useEffect(() => {
-    getAllNhaCungCap();
+    getAllNhanVien();
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
     return (
         <Box m="15px">
       <Box display="flex" justifyContent="space-between" alignItems="center">
         <Box>
           <Typography variant="h2" color={colors.grey[100]} fontWeight="bold">
-            DANH SÁCH KHÁCH HÀNG
+            DANH SÁCH NHÂN VIÊN
           </Typography>
         </Box>
-        <Box>
-        </Box>
+        {/* <Box>
+            <Button>Thêm nhân viên</Button>
+        </Box> */}
+        <ThemNhanVien data={data} setData={setData} />
       </Box>
 
       {/* Hien thi table data-grid */}
@@ -188,4 +159,4 @@ const KhachHang = () => {
     );
 };
 
-export default KhachHang;
+export default NhanVien;

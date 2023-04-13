@@ -14,7 +14,7 @@ import {
   import { Formik } from 'formik';
   import * as yup from 'yup';
   import axios from "axios";
-  
+  import { toast } from 'react-toastify';
   const initialValues = {
     tenChiNhanh: '',
     diaChiChiNhanh: ''
@@ -49,12 +49,7 @@ import {
         })
         .then((response) => {
           if (response.status === 201) {
-            alert('Thêm chi nhánh thành công');
-            //console.log(...data);
-            // const result = {
-            //     id: response.data.result._id,
-            //     tenLoaiSP: response.data.result.tenLoaiSP
-            // }
+            toast.success('Thêm chi nhánh thành công');
             setData([...data, response.data.result]);
           }
         })

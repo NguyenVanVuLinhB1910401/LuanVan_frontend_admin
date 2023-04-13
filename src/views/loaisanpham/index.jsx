@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import FormDialog from './FormDialog';
 import { useSelector } from 'react-redux';
-
+import { toast } from 'react-toastify';
 const LoaiSanPham = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
@@ -24,22 +24,12 @@ const LoaiSanPham = () => {
         <Box display="flex" gap={2}>
           <Button
             sx={{
-              backgroundColor: colors.greenAccent[600],
-              '&:hover': {
-                backgroundColor: colors.greenAccent[500],
-              },
-            }}
-          >
-            Cập nhật
-          </Button>
-          <Button
-            sx={{
               backgroundColor: colors.redAccent[600],
               '&:hover': {
                 backgroundColor: colors.redAccent[500],
               },
             }}
-            onClick={() => handleDeleteLoaiSP(cellValues.row._id)}
+            onClick={() => handleDeleteLoaiSP(cellValues.row._id, cellValues.row.tenLoaiSP)}
           >
             Xóa
           </Button>
@@ -67,8 +57,9 @@ const LoaiSanPham = () => {
       })
       .catch((err) => console.log(err));
   };
-  const handleDeleteLoaiSP = async (id) => {
-    axios
+  const handleDeleteLoaiSP = async (id, tenLoai) => {
+    if(window.confirm(`Banj có chắc muốn xóa ${tenLoai}?`)){
+      axios
       .delete('http://localhost:3000/api/loaisanphams/' + id, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -76,11 +67,12 @@ const LoaiSanPham = () => {
       })
       .then((res) => {
         if (res.status === 200) {
-          alert('Xóa loại sản phẩm thành công');
+          toast.success('Xóa loại sản phẩm thành công');
           setData(data.filter((dt) => dt._id !== id));
         }
       })
       .catch((err) => console.log(err));
+    }
   };
   useEffect(() => {
     getAllLoaiSP();
